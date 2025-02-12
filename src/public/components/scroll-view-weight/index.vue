@@ -1,0 +1,43 @@
+<template>
+  <view
+    class="scroll-view-weight fixed inset-x-0 inset-y-0 overflow-hidden flex flex-col"
+    :style="{ height: height, backgroundColor: bgColor }"
+  >
+    <slot name="header"></slot>
+    <view class="scroll-view-super flex flex-1 flex-col relative">
+      <view class="scroll-view-container relative square-full">
+        <scroll-view
+          height="100%"
+          class="scroll-view-absolute absolute top-0 left-0 square-full"
+          scroll-y
+          @scroll="scroll"
+          @scrolltolower="scrolltolower"
+        >
+          <slot></slot>
+        </scroll-view>
+      </view>
+    </view>
+    <slot name="bottom"></slot>
+  </view>
+</template>
+<script setup lang="ts">
+const props = withDefaults(
+  defineProps<{
+    height: string
+    bgColor: string
+  }>(),
+  {
+    height: '100%',
+    bgColor: 'transparent',
+  },
+)
+const emit = defineEmits(['scrolltolower', 'scroll'])
+
+const scrolltolower = (e) => {
+  emit('scrolltolower', e)
+}
+const scroll = (e) => {
+  emit('scroll', e)
+}
+</script>
+<style lang="scss" scoped></style>

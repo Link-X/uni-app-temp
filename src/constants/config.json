@@ -1,0 +1,22 @@
+{
+  "shopServerHeader": {
+    "mixId": "shop23n05y18abcd",
+    "alias": "shop",
+    "cg-ac": "shop-user"
+  },
+  "projectInfo": {
+    "name": "uni-app-temp",
+    "appId": "wx130fd51ad4c6c61f"
+  },
+
+  "md5Key": "908456fewoiagdsjioby",
+  "qqMpKey": "Z5XBZ-T63C6-4OISF-EZEBF-4ILSE-GQBM5",
+  "gdMpKey": "5ab05f50a91aaaa2a1286ad56335261c",
+  "defLocation": {
+    "code": "410700",
+    "firstLetter": "x",
+    "lat": "35.309640",
+    "lng": "113.933600",
+    "name": "新乡市"
+  }
+}
