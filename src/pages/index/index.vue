@@ -20,7 +20,7 @@
       <view class="mt-12">
         <image src="/static/logo.svg" alt="" class="w-28 h-28 block mx-auto" />
       </view>
-      <view class="text-center text-4xl main-title-color mt-4">uni-app-temp</view>
+      <view class="text-center text-4xl main-title-color mt-4">{{ config.projectInfo.name }}</view>
       <view class="text-center text-2xl mt-2 mb-8">uniapp 开发模板</view>
 
       <view class="text-justify max-w-100 m-auto text-4 indent mb-2">{{ description }}</view>
@@ -39,6 +39,7 @@
 <script lang="ts" setup>
 import { TestEnum } from '@/typings'
 import { platform } from '@/constants/env'
+import config from '@/constants/config.json'
 
 defineOptions({
   name: 'Home',

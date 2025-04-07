@@ -5,6 +5,7 @@ import { createSSRApp } from 'vue'
 import App from './App.vue'
 import { prototypeInterceptor } from './interceptors'
 import store from './store'
+import { loginCheck } from '@/public/directive'
 
 export function createApp() {
   const app = createSSRApp(App)
@@ -13,6 +14,7 @@ export function createApp() {
   app.config.compilerOptions.isCustomElement = (tag) => {
     return tag.startsWith('wx-open-launch-weapp')
   }
+  loginCheck(app)
   return {
     app,
   }

@@ -1,17 +1,23 @@
 {
   "shopServerHeader": {
-    "mixId": "shop23n05y18abcd",
-    "alias": "shop",
-    "cg-ac": "shop-user"
+    "mixId": "98FF053B0",
+    "alias": "luckdraw",
+    "cg-ac": "luckydraw-user",
+    "tenantCode": "ha.xinx.luckydraw.platform.user"
   },
   "projectInfo": {
-    "name": "uni-app-temp",
-    "appId": "wx130fd51ad4c6c61f"
+    "name": "我的新乡",
+    "appId": "",
+    "key": "fortuneApp",
+    "about": {
+      "copyright": "Copyright ® 2020~2025",
+      "firm": "cb数据技术有限公司"
+    }
   },
 
-  "md5Key": "908456fewoiagdsjioby",
-  "qqMpKey": "Z5XBZ-T63C6-4OISF-EZEBF-4ILSE-GQBM5",
-  "gdMpKey": "5ab05f50a91aaaa2a1286ad56335261c",
+  "md5Key": "",
+  "qqMpKey": "",
+  "gdMpKey": "",
   "defLocation": {
     "code": "410700",
     "firstLetter": "x",

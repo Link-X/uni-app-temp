@@ -1,5 +1,5 @@
 import permissionMessageBox from '@/public/components/permission-message-box/index'
-import { platform } from '@/constants/env'
+import { platform, VITE_APP_PUBLIC_BASE } from '@/constants/env'
 import storageManager from '@/public/utils/storage'
 
 class FlutterJoin {
@@ -120,17 +120,17 @@ class FlutterJoin {
 
   scanQRCode = async (data: { tip: string }) => {
     if (!this.checkFlutter()) return
-    const removeMessageBox = await this.permissionPrompts(
-      'saveLocalImage',
-      data?.tip || '保存图片需要您的相册存储权限',
-      '相册存储权限使用说明',
-    )
+    // const removeMessageBox = await this.permissionPrompts(
+    //   'saveLocalImage',
+    //   data?.tip || '保存图片需要您的相册存储权限',
+    //   '相册存储权限使用说明',
+    // )
     try {
       const res = await window.flutter_inappwebview.callHandler('scanQRCode')
-      if (typeof removeMessageBox === 'function') removeMessageBox()
+      // if (typeof removeMessageBox === 'function') removeMessageBox()
       return res
     } catch (err) {
-      if (typeof removeMessageBox === 'function') removeMessageBox()
+      // if (typeof removeMessageBox === 'function') removeMessageBox()
       return {}
     }
   }
@@ -142,17 +142,11 @@ class FlutterJoin {
     if (!this.checkFlutter()) return Promise.reject({ hasLocationPermission: false })
     if (data.locationTip) {
       try {
-        const removeMessageBox = await this.permissionPrompts(
-          'location',
-          data.locationTip,
-          '位置权限使用说明',
-        )
+        await this.permissionPrompts('location', data.locationTip, '位置权限使用说明')
         try {
           const res = await window.flutter_inappwebview.callHandler('getLocationPermissionStatus')
-          if (typeof removeMessageBox === 'function') removeMessageBox()
           return res
         } catch (err) {
-          if (typeof removeMessageBox === 'function') removeMessageBox()
           return Promise.reject({ hasLocationPermission: false })
         }
       } catch (err) {
@@ -170,18 +164,15 @@ class FlutterJoin {
 
   saveLocalImage = async (data: { img: string; tip?: string }) => {
     if (!this.checkFlutter()) return
-    const removeMessageBox = await this.permissionPrompts(
+    await this.permissionPrompts(
       'saveLocalImage',
       data?.tip || '保存图片需要您的相册存储权限',
       '相册存储权限使用说明',
     )
     try {
       const res = await window.flutter_inappwebview.callHandler('saveLocalImage', data)
-      if (typeof removeMessageBox === 'function') removeMessageBox()
       return res
-    } catch (err) {
-      if (typeof removeMessageBox === 'function') removeMessageBox()
-    }
+    } catch (err) {}
   }
 
   getUserInfo = async (): Promise<{
@@ -247,6 +238,11 @@ class FlutterJoin {
     })
   }
 
+  weChatBusinessView = (queryStr: string) => {
+    if (!this.checkFlutter()) return
+    return window.flutter_inappwebview.callHandler('weChatBusinessView', queryStr)
+  }
+
   openEmbeddedMiniProgram = (data: UniNamespace.OpenEmbeddedMiniProgramOption) => {
     if (!this.isFlutter) {
       uni.openEmbeddedMiniProgram({
@@ -297,7 +293,7 @@ class FlutterJoin {
   getDeviceInfo = async () => {
     if (!this.checkFlutter()) return { top: 10 }
     try {
-      return window.flutter_inappwebview.callHandler('getDeviceInfo')
+      return window?.flutter_inappwebview?.callHandler('getDeviceInfo')
     } catch (error) {
       console.error('Error getting device info:', error)
       return { top: 10 }
@@ -306,16 +302,11 @@ class FlutterJoin {
 
   selectImage = async () => {
     if (!this.checkFlutter()) return
-    const removeMessageBox = await this.permissionPrompts(
-      'selectImage',
-      '修改头像需要使用您的相机或者相册',
-    )
+    await this.permissionPrompts('selectImage', '修改头像需要使用您的相机或者相册')
     try {
       const res = await window.flutter_inappwebview.callHandler('selectImage')
-      if (typeof removeMessageBox === 'function') removeMessageBox()
       return res
     } catch (err) {
-      if (typeof removeMessageBox === 'function') removeMessageBox()
       return { result: '' }
     }
   }
@@ -347,9 +338,19 @@ class FlutterJoin {
     }
   }
 
-  showAdDialog = (params: { url: string; width: number; height: number; adHeight: number }) => {
+  showAdDialog = (params: {
+    url: string
+    width: number
+    height: number
+    adHeight: number
+    adId?: string
+  }) => {
     if (!this.checkFlutter()) return
-    return window.flutter_inappwebview.callHandler('showAdDialog', params)
+    const { origin } = window.location
+    return window.flutter_inappwebview.callHandler('showAdDialog', {
+      ...params,
+      url: `${origin}${VITE_APP_PUBLIC_BASE}/#/subpackages/model${params.url}`,
+    })
   }
 
   onUserEvent = (params: any) => {
@@ -365,7 +366,7 @@ class FlutterJoin {
         return reject(new Error('用户拒绝获取定位'))
       }
       if (listForPermissions[key] !== 'agree') {
-        const removeMessageBox = permissionMessageBox.show(
+        permissionMessageBox.show(
           {
             title: permissionTitle || '提示',
             confirmBtnText: '确定',
@@ -378,7 +379,7 @@ class FlutterJoin {
                 ...listForPermissions,
                 [key]: 'agree',
               })
-              resolve(removeMessageBox)
+              resolve({})
             },
             cancelCallback: (action) => {
               storageManager.setStorage('listForPermissions', {

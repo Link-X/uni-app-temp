@@ -17,6 +17,11 @@ export type pullUpTheVideoADParams = {
   // 其他参数
   options: videoAdOptions
 }
+export type videoAdResult = {
+  isEnded: boolean
+  transId: string
+  key: string
+}
 
 class FlutterAdUtils {
   adId: string
@@ -152,7 +157,7 @@ class FlutterAdUtils {
     }
   }
 
-  show(params: pullUpTheVideoADParams) {
+  show(params: pullUpTheVideoADParams): Promise<videoAdResult> {
     this.addEventListener()
     return new Promise(async (resolve, reject) => {
       this.resolve = resolve
@@ -165,8 +170,6 @@ class FlutterAdUtils {
         }
       } catch (err) {
         this.reject(err)
-      } finally {
-        this.destroy()
       }
     })
   }
