@@ -4,19 +4,11 @@ import { currRoute } from '@/public/utils/methods'
 import { tabBar } from '@/pages.json'
 
 type ShowModalRes = {
-  /**
-   * 为 true 时，表示用户点击了确定按钮
-   */
   confirm: boolean
-  /**
-   * 为 true 时，表示用户点击了取消
-   */
   cancel: boolean
-  /**
-   * editable 为 true 时，用户输入的文本
-   */
   content?: string
 }
+
 class ErrorHandler {
   // 控制是否显示登录模态对话框
   private isLoginModalVisible: boolean
@@ -29,7 +21,7 @@ class ErrorHandler {
   }
 
   // 显示模态对话框
-  private showModal(options): Promise<ShowModalRes> {
+  private showModal(options: UniNamespace.ShowModalOptions): Promise<ShowModalRes> {
     return new Promise((resolve) => {
       uni.showModal({
         ...options,
@@ -39,10 +31,10 @@ class ErrorHandler {
   }
 
   // 导航回上一页并显示提示
-  private navigateBackWithPrompt(data) {
+  private navigateBackWithPrompt(data: never) {
     this.showModal({
       title: '温馨提示',
-      content: data.msg,
+      content: data?.msg || '请求错误',
       confirmText: '确定',
       showCancel: false,
     }).then(() => {
@@ -91,19 +83,28 @@ class ErrorHandler {
       content: this.getErrorMessage(data),
       showCancel: false,
     }).then(() => {
-      resolve({ success: false })
+      resolve({ success: false, error: this.getErrorMessage(data) })
     })
   }
 
+  // 不要弹错误,业务自己处理
+  private exceptionError(data: any, resolve: any) {
+    const msg = data?.msg || data?.data?.msg || ''
+    const exception = ['本轮答题错误']
+    if (exception.find((v) => v.includes(msg))) {
+      return resolve({ success: false, error: this.getErrorMessage(data) })
+    }
+    this.handleGeneralError(data, resolve)
+  }
+
   // 获取错误信息
-  private getErrorMessage(data: any): string {
+  private getErrorMessage(res: any): string {
+    const data = res?.data || {}
     let content =
-      data.data.msg ||
-      data.data.error ||
-      data.data.errorMessage ||
-      data.data.errMsg ||
-      '网络异常，请稍后再试'
-    if (data?.errMsg?.includes('request:fail')) {
+      typeof data === 'string'
+        ? data
+        : data.msg || data.error || data.errorMessage || data.data.errMsg || '网络异常，请稍后再试'
+    if (res?.errMsg?.includes('request:fail')) {
       content = '网络异常，请稍后再试'
     }
     return content
@@ -123,6 +124,8 @@ class ErrorHandler {
         return
       }
       const errorHandlers = {
+        200: () => this.exceptionError(data, resolve),
+        500: () => this.exceptionError(data, resolve),
         403: () => this.handleTokenExpired(resolve),
         104006: () => this.handleTokenExpired(resolve),
         6004: () => this.navigateBackWithPrompt(data),

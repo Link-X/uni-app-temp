@@ -107,7 +107,7 @@ export const getIsTabbar = () => {
  */
 export const currRoute = () => {
   const lastPage = getLastPage()
-  const currRoute = (lastPage as any).$page
+  const currRoute = (lastPage as any)?.$page || {}
   // console.log('lastPage.$page:', currRoute)
   // console.log('lastPage.$page.fullpath:', currRoute.fullPath)
   // console.log('lastPage.$page.options:', currRoute.options)
@@ -117,7 +117,7 @@ export const currRoute = () => {
   // console.log(fullPath)
   // eg: /pages/login/index?redirect=%2Fpages%2Fdemo%2Fbase%2Froute-interceptor (小程序)
   // eg: /pages/login/index?redirect=%2Fpages%2Froute-interceptor%2Findex%3Fname%3Dfeige%26age%3D30(h5)
-  return getUrlObj(fullPath)
+  return getUrlObj(fullPath || '')
 }
 
 const ensureDecodeURIComponent = (url: string) => {
@@ -205,7 +205,7 @@ export const asyncTaskDone = () => {
     readyResolve = resolve
   })
   readyPromise.then((res) => {
-    finishData = res || true
+    finishData = res || {}
     const len = cbArray.length
     for (let i = 0; i < len; i++) {
       const fn = cbArray.pop()
@@ -241,4 +241,15 @@ export function deepFreeze(obj: any): any {
   })
 
   return Object.freeze(obj)
+}
+
+export const tryCatchMethod = async <T>(fn: any) => {
+  let data: T | null = null
+  let err: any = null
+  try {
+    data = await fn()
+  } catch (error) {
+    err = error
+  }
+  return [err, data] as const
 }

@@ -22,12 +22,12 @@ export default defineUniPages({
     custom: true,
     color: '#999999',
     selectedColor: '#018d71',
-    backgroundColor: '#F8F8F8',
     borderStyle: 'black',
-    height: '50px',
-    fontSize: '10px',
-    iconWidth: '24px',
-    spacing: '3px',
+    backgroundColor: '#fff',
+    height: '110rpx',
+    fontSize: '24rpx',
+    iconWidth: '38rpx',
+    spacing: '6rpx',
     list: [
       // 注意tabbar路由需要使用 layout:tabbar 布局
       {

@@ -1,7 +1,7 @@
 import fetchUtils from '@cb-public/fetch-utils'
 import { shopServerHeader, md5Key } from '@/constants/config.json'
-import { VITE_SERVER_BASEURL } from '@/constants/env'
-import { useUserStore } from '@/store'
+import { VITE_SERVER_BASEURL, VITE_VERSION } from '@/constants/env'
+import { useGlobalStore, useUserStore } from '@/store'
 import catchError from './catch-error'
 import type { RequestSuccessCallbackResult } from '@cb-public/fetch-utils/dist/types'
 
@@ -24,13 +24,14 @@ const fetchInstance = fetchUtils.createInstance({
 
 // 添加 header 变量
 const addHeaderVar = (header: Record<string, string> = {}, data: parameterType) => {
+  const { appInfo } = useGlobalStore().globalState
   const { token } = useUserStore().userInfo
   return {
     token,
     // 'cg-ac': 'ha.xinx.luckydraw.platform',
     'cg-ac': shopServerHeader['cg-ac'],
-    'cg-av': '1',
-    'cg-am': '1',
+    'cg-av': appInfo.appVersion,
+    'cg-am': appInfo.channel || '',
     ...header,
   }
 }
