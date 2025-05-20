@@ -1,0 +1,6 @@
+{
+  "appResource": "smartxinx.app.resource",
+  "appMarketVersion": "smartxinx.app.market-version",
+  "auditStatus": "smartxinx.audit.status",
+  "adData": "smartxinx.ad.data"
+}

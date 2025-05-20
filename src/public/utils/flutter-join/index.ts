@@ -291,7 +291,10 @@ class FlutterJoin {
   }
 
   getDeviceInfo = async () => {
-    if (!this.checkFlutter()) return { top: 10 }
+    if (!this.checkFlutter()) {
+      const info = uni.getSystemInfoSync()
+      return { top: info.statusBarHeight || 20 }
+    }
     try {
       return window?.flutter_inappwebview?.callHandler('getDeviceInfo')
     } catch (error) {

@@ -22,10 +22,10 @@
         >
           <template #icon>
             <wd-icon
-              mb-5rpx
-              pt-20rpx
               size="34rpx"
-              :custom-class="`iconfont ${
+              :custom-class="`
+              mb-5rpx
+              pt-20rpx iconfont ${
                 item.pagePath.includes(tabbar) ? 'text-light-primary' : 'text-#C4C4C4'
               }`"
               class-prefix="icon"

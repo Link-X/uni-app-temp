@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import flutterApi from '@/public/utils/flutter-join/index'
 import { deepFreeze } from '@/public/utils/methods'
-import { isDev } from '@/constants/env'
+import { isDev, isFlutterWebview, isH5 } from '@/constants/env'
 
 const initState = {
   deviceInfo: {
@@ -15,6 +15,13 @@ const initState = {
     channel: '',
     auditStatus: false,
   },
+  setting: {
+    seniorCitizenMode: false,
+    normalSize: undefined,
+    largerSize: undefined,
+    tabbarContentHeight: '95vh',
+    tabbarHeight: '110rpx',
+  },
 }
 
 export type IGlobalState = typeof initState
@@ -25,6 +32,24 @@ export const useGlobalStore = defineStore(
   'global',
   () => {
     const globalState = ref<IGlobalState>({ ...initState })
+
+    const getTabbarContent = () => {
+      nextTick(() => {
+        const info = uni.getSystemInfoSync()
+        const tabDom = document?.querySelector('.uni-tabbar')
+        if (!tabDom || isFlutterWebview || isH5) {
+          const height = tabDom?.getBoundingClientRect()?.height
+          const contentHeight = info.screenHeight - height
+          globalState.value.setting.tabbarHeight = height + 'px'
+          globalState.value.setting.tabbarContentHeight = `${contentHeight}px`
+        } else {
+          const height = uni.upx2px(110)
+          const contentHeight = info.screenHeight - height
+          globalState.value.setting.tabbarHeight = height + 'px'
+          globalState.value.setting.tabbarContentHeight = `${contentHeight}px`
+        }
+      })
+    }
 
     // 获取设备信息
     const getDeviceInfo = async () => {
@@ -54,6 +79,7 @@ export const useGlobalStore = defineStore(
 
     // 初始化 app 信息
     const appEntryInit = (opt) => {
+      if (!isFlutterWebview) return
       const params = handleUrlParams(opt)
       getDeviceInfo()
       window.addEventListener('flutterInAppWebViewPlatformReady', async function () {
@@ -61,7 +87,7 @@ export const useGlobalStore = defineStore(
         onAuditStatusReady((auditStatus) => {
           // 如果审核状态为 true，则执行更新app 逻辑
           if (auditStatus) {
-            useForceAnUpdateToTheApp(params.appVersion)
+            // useForceAnUpdateToTheApp(params.appVersion)
           }
           const readyInfo = {
             auditStatus,
@@ -73,6 +99,7 @@ export const useGlobalStore = defineStore(
     }
 
     const install = (opt) => {
+      getTabbarContent()
       appEntryInit(opt)
     }
 

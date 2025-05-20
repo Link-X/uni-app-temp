@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
+import { useGlobalStore, useUserStore } from '@/store'
 
-onLaunch(() => {
-  console.log('App Launch')
+const globalStore = useGlobalStore()
+onLaunch((opt) => {
+  globalStore.install(opt)
 })
 onShow(() => {
   console.log('App Show')

@@ -13,7 +13,6 @@
     :style="{ marginTop: safeAreaInsets?.top + 'px' }"
   >
     <view class="text-center text-3xl mt-8">
-      鸽友们好，我是
       <text class="text-red-500">uni-app-temp</text>
     </view>
     <RequestComp />
