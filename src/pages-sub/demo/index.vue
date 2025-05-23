@@ -12,6 +12,10 @@
 </template>
 
 <script lang="ts" setup>
+import { currRoute } from '@/public/utils/methods'
+onLoad(() => {
+  console.log('分包页面', currRoute())
+})
 // code here
 </script>
 

@@ -94,7 +94,6 @@
     "js-md5": "0.8.3",
     "pinia": "2.3.1",
     "pinia-plugin-persistedstate": "3.2.1",
-    "qs": "6.14.0",
     "vue": "3.4.21",
     "vue3-seamless-scroll": "2.0.1",
     "wot-design-uni": "1.9.1",
