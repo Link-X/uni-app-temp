@@ -1,12 +1,19 @@
 <template>
-  <wd-config-provider w-screen h-screen :themeVars="themeVars" :theme="mode">
+  <wd-config-provider w-screen :themeVars="themeVars" :theme="mode">
     <view
-      class="bg-transparent absolute w-full h-full inset-x-0 inset-y-0 overflow-hidden flex flex-col"
+      :class="{
+        'h-screen': platform.isMp,
+      }"
     >
-      <view class="flex flex-1 flex-col relative">
+      <view
+        class="relative"
+        :style="{
+          height: tabbarContentHeight,
+        }"
+      >
         <slot></slot>
       </view>
-      <wd-tabbar
+      <!-- <wd-tabbar
         placeholder
         fixed
         :safeAreaInsetBottom="true"
@@ -22,9 +29,8 @@
         >
           <template #icon>
             <wd-icon
-              size="34rpx"
-              :custom-class="`
-              mb-5rpx
+              size="46rpx"
+              :custom-class="`   mb-5rpx
               pt-20rpx iconfont ${
                 item.pagePath.includes(tabbar) ? 'text-light-primary' : 'text-#C4C4C4'
               }`"
@@ -33,7 +39,7 @@
             />
           </template>
         </wd-tabbar-item>
-      </wd-tabbar>
+      </wd-tabbar> -->
     </view>
     <wd-toast />
     <wd-message-box />
@@ -42,12 +48,18 @@
 
 <script lang="ts" setup>
 import { currRoute } from '@/public/utils/methods'
-import { tabBar } from '@/pages.json'
+import { useGlobalStore } from '@/store'
+import { platform } from '@/constants/env'
 
 import useTheme from './theme'
 
 const { themeVars, mode } = useTheme()
 const tabbar = ref('home')
+const tabbarContentHeight = computed(() => {
+  const height = useGlobalStore().globalState?.setting?.tabbarContentHeight
+  const computedHeight = height ? `${height}px` : '95vh'
+  return platform.isMp ? '100%' : computedHeight
+})
 
 const changeTabbar = (data: { value: string }) => {
   uni.switchTab({
@@ -56,9 +68,12 @@ const changeTabbar = (data: { value: string }) => {
 }
 
 onShow(() => {
-  uni.hideTabBar()
+  // uni.hideTabBar()
   const currentPage = currRoute()
   tabbar.value = currentPage.path.substring(1)
+})
+onLoad(() => {
+  useGlobalStore().getTabbarContent()
 })
 </script>
 <style lang="scss" scoped></style>

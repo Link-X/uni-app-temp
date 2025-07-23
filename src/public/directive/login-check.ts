@@ -1,6 +1,6 @@
 import type { App } from 'vue'
-import qs from 'qs'
 import { useUserStore } from '@/store'
+import { urlEncode } from '@/public/utils/methods'
 import { currRoute } from '@/public/utils/methods'
 
 export const loginCheck = (app: App<Element>) => {
@@ -8,7 +8,7 @@ export const loginCheck = (app: App<Element>) => {
     if (!useUserStore().userInfo.token) {
       e.stopPropagation()
       const { path, query } = currRoute()
-      const redirect = `${path}?${qs.stringify(query) || ''}`
+      const redirect = `${path}?${urlEncode(query) || ''}`
       uni.reLaunch({
         url: `/pages/login/index?redirect=${encodeURIComponent(redirect)}`,
       })

@@ -134,7 +134,6 @@ const ensureDecodeURIComponent = (url: string) => {
 export const getUrlObj = (url: string) => {
   const [path, queryStr] = url.split('?')
   // console.log(path, queryStr)
-
   if (!queryStr) {
     return {
       path,
@@ -149,6 +148,38 @@ export const getUrlObj = (url: string) => {
   })
   return { path, query }
 }
+/**
+ * 将对象转换为url参数
+ * @param obj
+ * @returns
+ */
+export const urlEncode = (obj) => {
+  if (!obj) return ''
+  let params = Object.keys(obj || {})
+    .map((key) => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key])
+    })
+    .join('&')
+  return params
+}
+
+/**
+ * 将url参数转换为对象
+ * @param url
+ * @returns
+ */
+export const urlDecode = (url: string) => {
+  const obj = {}
+  if (!url) return obj
+  const paraString = url.substring(url.indexOf('?') + 1, url.length)
+  const arr = paraString.split('&')
+  arr.forEach((item) => {
+    const [key, value] = item.split('=')
+    obj[key] = decodeURIComponent(value)
+  })
+  return obj
+}
+
 /**
  * 得到所有的需要登录的pages，包括主包和分包的
  * 这里设计得通用一点，可以传递key作为判断依据，默认是 needLogin, 与 route-block 配对使用

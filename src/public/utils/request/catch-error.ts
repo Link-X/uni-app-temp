@@ -1,4 +1,4 @@
-import qs from 'qs'
+import { urlEncode } from '@/public/utils/methods'
 import { useUserStore } from '@/store/user'
 import { currRoute } from '@/public/utils/methods'
 import { tabBar } from '@/pages.json'
@@ -60,7 +60,7 @@ class ErrorHandler {
         if (!ret.confirm) return
         useUserStore().clearUserInfo()
         const { path, query } = currRoute()
-        const redirect = `${path}?${qs.stringify(query) || ''}`
+        const redirect = `${path}?${urlEncode(query) || ''}`
         if (!this.shouldJump(path)) return
         uni.reLaunch({
           url: `/pages/login/index?redirect=${encodeURIComponent(redirect)}`,

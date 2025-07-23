@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import flutterApi from '@/public/utils/flutter-join/index'
 import { deepFreeze } from '@/public/utils/methods'
-import { isDev, isFlutterWebview, isH5 } from '@/constants/env'
+import { isDev, isFlutterWebview, platform } from '@/constants/env'
 
 const initState = {
   deviceInfo: {
@@ -19,8 +19,8 @@ const initState = {
     seniorCitizenMode: false,
     normalSize: undefined,
     largerSize: undefined,
-    tabbarContentHeight: '95vh',
-    tabbarHeight: '110rpx',
+    tabbarContentHeight: undefined,
+    tabbarHeight: 110,
   },
 }
 
@@ -37,16 +37,17 @@ export const useGlobalStore = defineStore(
       nextTick(() => {
         const info = uni.getSystemInfoSync()
         const tabDom = document?.querySelector('.uni-tabbar')
-        if (!tabDom || isFlutterWebview || isH5) {
+        if (tabDom || isFlutterWebview || platform.isH5) {
           const height = tabDom?.getBoundingClientRect()?.height
           const contentHeight = info.screenHeight - height
-          globalState.value.setting.tabbarHeight = height + 'px'
-          globalState.value.setting.tabbarContentHeight = `${contentHeight}px`
-        } else {
-          const height = uni.upx2px(110)
-          const contentHeight = info.screenHeight - height
-          globalState.value.setting.tabbarHeight = height + 'px'
-          globalState.value.setting.tabbarContentHeight = `${contentHeight}px`
+          globalState.value.setting.tabbarHeight = height
+          globalState.value.setting.tabbarContentHeight = contentHeight
+        } else if (platform.isMp) {
+          const { screenHeight, windowHeight } = info
+          const tabBarHeight = screenHeight - windowHeight
+          const contentHeight = info.screenHeight - tabBarHeight
+          globalState.value.setting.tabbarHeight = tabBarHeight
+          globalState.value.setting.tabbarContentHeight = contentHeight
         }
       })
     }
@@ -55,7 +56,6 @@ export const useGlobalStore = defineStore(
     const getDeviceInfo = async () => {
       try {
         const res = await flutterApi.getDeviceInfo()
-        console.log(deepFreeze(res))
         globalState.value.deviceInfo = deepFreeze(res)
       } catch (err) {
         console.error(err)
@@ -104,6 +104,7 @@ export const useGlobalStore = defineStore(
     }
 
     return {
+      getTabbarContent,
       globalState,
       install,
     }
