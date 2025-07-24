@@ -98,11 +98,10 @@ class ImageJSsdk {
 
     const urlInfo = this.getUrlInfo(urlObj)
     const sizeStr = this.imageSizeMap[sizeType] || ''
-
     // 处理已为webp格式的URL
     if (urlInfo.ext === 'webp') {
       // 避免重复添加尺寸参数
-      return url.includes(sizeStr) ? url : `${url}${sizeStr}`
+      return url.includes('@h') ? url : `${url}${sizeStr}`
     }
 
     // 处理其他格式转换为webp
