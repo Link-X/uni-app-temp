@@ -103,6 +103,9 @@ class ImageJSsdk {
       // 避免重复添加尺寸参数
       return url.includes('@h') ? url : `${url}${sizeStr}`
     }
+    if (!this.imageExtensions.includes(urlInfo.ext)) {
+      return url
+    }
 
     // 处理其他格式转换为webp
     const hasSize = sizeStr && !url.includes(sizeStr)
