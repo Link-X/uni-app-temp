@@ -84,7 +84,7 @@
     "bin-wrapper": "npm:bin-wrapper-china"
   },
   "dependencies": {
-    "@cb-public/fetch-utils": "1.1.9",
+    "@cb-public/fetch-utils": "1.2.0",
     "@dcloudio/uni-app": "3.0.0-4070520250711001",
     "@dcloudio/uni-app-plus": "3.0.0-4070520250711001",
     "@dcloudio/uni-components": "3.0.0-4070520250711001",
