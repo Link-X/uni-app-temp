@@ -97,7 +97,7 @@
     "pinia-plugin-persistedstate": "3.2.1",
     "vue": "3.4.21",
     "vue3-seamless-scroll": "2.0.1",
-    "wot-design-uni": "1.10.0",
+    "wot-design-uni": "1.12.4",
     "z-paging": "2.8.7"
   },
   "devDependencies": {
