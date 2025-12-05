@@ -1,8 +1,8 @@
 #### uni-app-temp
 
 环境:  
-node: v20.14.0  
-pnpm: v9.12.1  
+node: v22.17.0  
+pnpm: v9.15.9
 
 1、安装依赖:  
  `1、pnpm i`
