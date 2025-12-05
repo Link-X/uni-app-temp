@@ -17,6 +17,7 @@ import UniManifest from '@uni-helper/vite-plugin-uni-manifest'
 import AutoImport from 'unplugin-auto-import/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 import ViteRestart from 'vite-plugin-restart'
+import { codeInspectorPlugin } from 'code-inspector-plugin'
 
 // https://vitejs.dev/config/
 export default async ({ command, mode }) => {
@@ -106,6 +107,12 @@ export default async ({ command, mode }) => {
           open: true,
           gzipSize: true,
           brotliSize: true,
+        }),
+      UNI_PLATFORM === 'h5' &&
+        mode === 'development' &&
+        codeInspectorPlugin({
+          bundler: 'vite',
+          showSwitch: true, // 开启后会出来一个按钮，点击按钮之后点击想看的元素就能定位了
         }),
     ],
     define: {

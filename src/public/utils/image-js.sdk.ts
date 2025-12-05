@@ -1,3 +1,4 @@
+import { pathToBase64 } from './image-tools'
 class ImageJSsdk {
   // 支持的图片扩展名
   private readonly imageExtensions: string[] = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp']
@@ -98,11 +99,13 @@ class ImageJSsdk {
 
     const urlInfo = this.getUrlInfo(urlObj)
     const sizeStr = this.imageSizeMap[sizeType] || ''
+
     // 处理已为webp格式的URL
     if (urlInfo.ext === 'webp') {
       // 避免重复添加尺寸参数
-      return url.includes('@h') ? url : `${url}${sizeStr}`
+      return url.includes(sizeStr) ? url : `${url}${sizeStr}`
     }
+
     if (!this.imageExtensions.includes(urlInfo.ext)) {
       return url
     }
@@ -110,6 +113,11 @@ class ImageJSsdk {
     // 处理其他格式转换为webp
     const hasSize = sizeStr && !url.includes(sizeStr)
     return hasSize ? `${url}${sizeStr}.webp` : `${url}${sizeStr ? '' : '@'}.webp`
+  }
+
+  getImgBase64(url: string): Promise<string> {
+    if (!url) return Promise.resolve('')
+    return pathToBase64(url)
   }
 }
 
